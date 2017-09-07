@@ -1,6 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-$ci = & get_instance();
-$ci->load->library('user_agent');
 
 // required for push notification FCM
 use sngrl\PhpFirebaseCloudMessaging\Client;
@@ -11,7 +9,7 @@ use sngrl\PhpFirebaseCloudMessaging\Notification;
 // required mandrill library
 require_once APPPATH.'libraries/Mandrill.php';
 // required sendgrid library
-require APPPATH.($ci->agent->platform()=="Linux"?"../vendor/sendgrid/sendgrid/lib/SendGrid.php":"..\\vendor\\sendgrid\\sendgrid\\lib\\SendGrid.php");
+require APPPATH."../vendor/sendgrid/sendgrid/lib/SendGrid.php";
 
 class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 {
