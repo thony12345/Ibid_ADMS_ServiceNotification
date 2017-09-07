@@ -11,7 +11,7 @@ use sngrl\PhpFirebaseCloudMessaging\Notification;
 // required mandrill library
 require_once APPPATH.'libraries/Mandrill.php';
 // required sendgrid library
-require BASEPATH.($ci->agent->platform()=="Linux"?"../vendor/sendgrid/sendgrid/lib/SendGrid.php":"..\\vendor\\sendgrid\\sendgrid\\lib\\SendGrid.php");
+require APPPATH.($ci->agent->platform()=="Linux"?"../vendor/sendgrid/sendgrid/lib/SendGrid.php":"..\\vendor\\sendgrid\\sendgrid\\lib\\SendGrid.php");
 
 class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 {
