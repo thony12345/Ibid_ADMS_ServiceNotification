@@ -1,11 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
+$ci = & get_instance();
 // define template config
 define("ITYPECONF", serialize(array("email", "sms", "push")));
 define("ICONFIG", serialize(array("type", "token", "to", "cc", "subject", "body", "phone")));
 define("IEMAILCONF", serialize(array("type", "to", "cc", "subject", "body")));
 define("ISMSCONF", serialize(array("type", "phone", "body")));
 define("IPUSHCONF", serialize(array("type", "token", "subject", "body")));
-define("IEMAILSERVER", "mandrill"); // choose one (mandrill, sendgrid)
+define("IEMAILSERVER", $ci->config->item('default_email_service')); // choose one (mandrill, sendgrid)
 
 interface iNotification
 {

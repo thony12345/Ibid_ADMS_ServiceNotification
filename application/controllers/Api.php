@@ -29,7 +29,7 @@ class Api extends CI_Controller {
 	public function notification(){
 		$data = $this->input->post('data');
 		// $data = '{"token":"kosong","type":"email","to":["faujiakbar@gmail.com","faujiakbar@hotmail.co.id"],"cc":"evan_di@yahoo.com","subject":"Test","body":"Body saja karena tidak tahu isinya apa","baca":"saja"}';
-		$data = '{"type":"push", "token":["AIzaSyCn1qvXzYEtrN1iLElVIZCBVmoFFD-S6f0"], "subject":"test", "body":"test notification"}';
+		// $data = '{"type":"push", "token":["AIzaSyCn1qvXzYEtrN1iLElVIZCBVmoFFD-S6f0"], "subject":"test", "body":"test notification"}';
 		$tp = new ADMSNotification($data);
 		// $tp::FCMData();
 		// $tp::debug();
