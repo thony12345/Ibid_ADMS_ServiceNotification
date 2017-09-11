@@ -9,7 +9,7 @@ use sngrl\PhpFirebaseCloudMessaging\Notification;
 // required mandrill library
 require_once APPPATH.'libraries/Mandrill.php';
 // required sendgrid library
-require APPPATH."../vendor/sendgrid/sendgrid/lib/SendGrid.php";
+require BASEPATH."../vendor/sendgrid/sendgrid/lib/SendGrid.php";
 
 class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 {
@@ -255,6 +255,14 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 					}
 				}
 			}
+			// for sms notification
+			else if(self::$config->type == "sms"){
+				// unset type to clean data
+				unset(self::$config->type);
+
+				// send data sms
+				self::_curl(self::$ci->config->item('sms_url'), (array) self::$config);
+			}
 		}
 		return NULL;
 	}
@@ -281,7 +289,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		self::$data->setFrom(self::$ci->config->item('sendgrid_from'))
 			->setFromName(self::$ci->config->item('sendgrid_from_name'))
 			->setSubject(self::$config->subject)
-			->setText(self::$config->body);
+			->setHtml(self::$config->body);
 		foreach (self::$config->to as $i => $email) {
 			self::$data->addTo($email);
 		}
@@ -289,6 +297,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			foreach (self::$config->cc as $i => $email) {
 				self::$data->addCc($email);
 			}
+
 	}
 
 	public static function FCMData(){
@@ -336,6 +345,40 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			->set_output(json_encode(self::$json))
 			->_display();
 		exit();
+	}
+
+	public static function _curl($url=false, $data=false){
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true,     // return web page
+			CURLOPT_HEADER         => false,    // don't return headers
+			CURLOPT_FOLLOWLOCATION => true,     // follow redirects
+			CURLOPT_ENCODING       => "",       // handle all encodings
+			CURLOPT_USERAGENT      => self::$ci->agent->platform(), // who am i
+			CURLOPT_AUTOREFERER    => true,     // set referer on redirect
+			CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+			CURLOPT_TIMEOUT        => 120,      // timeout on response
+			CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
+			CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
+		);
+
+		if($data){
+			if(is_array($data)){
+				$postData = '';
+				foreach($params as $k => $v){
+					$postData .= $k . '='.$v.'&';
+				}
+				$postData = rtrim($postData, '&');
+				$options[CURLOPT_POST] = true;
+				$options[CURLOPT_POSTFIELDS] = $postData;
+			}
+		}
+
+		$curl      = curl_init($url);
+		curl_setopt_array( $curl, $options );
+
+		$response = json_decode(curl_exec($curl));
+		curl_close($curl);
+		return $response;
 	}
 
 	public static function debug(){
