@@ -46,7 +46,7 @@ class Api extends CI_Controller {
 
 		// example for sms notification
 		//===========================================================================================
-		$data = '{"type":"sms", "user":"user", "pwd":"password", "sender":"sender_id", "msisdn":"msisdn number", "message":"message push notification", "description":"Can NULL", "schedule":"date in urlencode", "campaign":"campaign type"}';
+		// $data = '{"type":"sms", "user":"user", "pwd":"password", "sender":"sender_id", "msisdn":"msisdn number", "message":"message push notification", "description":"Can NULL", "schedule":"date in urlencode", "campaign":"campaign type"}';
 
 		// generate notification
 		$tp = new ADMSNotification($data);
