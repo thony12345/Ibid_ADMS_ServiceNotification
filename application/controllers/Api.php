@@ -31,7 +31,7 @@ class Api extends CI_Controller {
 	public function notification(){
 		// get data from request
 		$data = $this->input->post('data');
-		if($data)
+		if(empty($data))
 			$data = $this->input->post()?$this->input->post():$this->input->get();
 		if(is_array($data)){
 			$data = json_encode($data);
