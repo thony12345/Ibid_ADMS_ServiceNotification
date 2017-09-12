@@ -22,10 +22,12 @@ class Api extends CI_Controller {
 		parent::__construct();
 		// generate for library
 		$this->libs = new libs;
+		// change language
+		$this->lang->load('system','indonesia');
 	}
 
 	public function index(){
-		$this->libs->resJson(400, array("status" => false, "message" => "You aren't allow to this API", "data" => null));
+		$this->libs->resJson(400, array("status" => false, "message" => lang('not_allow'), "data" => null));
 	}
 
 	public function notification(){

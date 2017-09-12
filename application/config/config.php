@@ -523,7 +523,7 @@ $config['rewrite_short_tags'] = TRUE;
 $config['proxy_ips'] = '';
 
 
-$config['default_email_service'] = 'sendgrid'; // choose one: mandrill,sendgrid
+$config['default_email_service'] = 'mandrill'; // choose one: mandrill,sendgrid
 /*
 |--------------------------------------------------------------------------
 | Mandrill App Config

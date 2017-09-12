@@ -140,17 +140,19 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				// for email to
 				// ========================================================================
 				// validate for "test1@email.com,test2@email.com,test3@email.com"
-				if(!is_array(self::$config->cc)){
-					$data = explode(",", self::$config->cc);
-					if(count($data) > 1){
-						self::$config->cc = array();
-						foreach ($data as $i => $email) {
-							if(!empty($email) && !is_null($email)) self::$config->cc[] = $email;
+				if(isset(self::$config->cc)){
+					if(!is_array(self::$config->cc)){
+						$data = explode(",", self::$config->cc);
+						if(count($data) > 1){
+							self::$config->cc = array();
+							foreach ($data as $i => $email) {
+								if(!empty($email) && !is_null($email)) self::$config->cc[] = $email;
+							}
+						} else{
+							// validate for "test1@email.com"
+							if(!empty(self::$config->cc) && !is_null(self::$config->cc))
+								self::$config->cc = array(self::$config->cc);
 						}
-					} else{
-						// validate for "test1@email.com"
-						if(!empty(self::$config->cc) && !is_null(self::$config->cc))
-							self::$config->cc = array(self::$config->cc);
 					}
 				}
 			}
@@ -171,12 +173,12 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 						$cache[] = $conf;
 				}
 				if(count($cache) !== count($var))
-					self::sendError(400, "Make sure your variable. (You: ".implode(", ", $cache).") (Template: ".implode(", ", $var).")");
+					self::sendError(400, lang('make_sure_type_head').implode(", ", $cache).lang('make_sure_type_foot').implode(", ", $var).")");
 				else return TRUE;
 			} else
-				self::sendError(400, "Use (".implode(", ", $type).") in type variable");
+				self::sendError(400, lang('use')." (".implode(", ", $type).") ".lang('in_type_variable'));
 		} else
-			self::sendError(400,"Type variable must define");
+			self::sendError(400, lang('type_must_define'));
 		// empty config
 		self::$config = array();
 		return FALSE;
@@ -228,7 +230,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 					$mandrill = new Mandrill(self::$ci->config->item('mandrill_apikey'));
 				try{
 					if(!($response = (IEMAILSERVER == "mandrill")?$mandrill->messages->send(self::$data, false):((IEMAILSERVER == "sendgrid")?$sendgrid->send(self::$data):false)))
-						throw new \Exception("Can't send notification");
+						throw new \Exception(lang('failed_notif'));
 					return $response;
 				} catch(\Exception $e){
 					self::sendError(401, $e->getMessage());
@@ -247,7 +249,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 
 					try{
 						if(!($response = self::$element->send($message)))
-							throw new \Exception("Can't send notification");
+							throw new \Exception(lang('failed_notif'));
 						return $response;
 					} catch(\Exception $e){
 						self::sendError(401, $e->getMessage());
@@ -305,7 +307,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			self::$element = new Client();
 			self::$element->setApiKey(self::$ci->config->item('FCM_APIKEY'));
 			if(self::$element->injectGuzzleHttpClient(new \GuzzleHttp\Client()))
-				throw new \Exception("Please Check your API KEY");
+				throw new \Exception(lang('check_api_key'));
 		} catch(\Exception $e){
 			self::sendError(401, $e->getMessage());
 		}
@@ -331,7 +333,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 	public static function _rest(){
 		$code = 201;
 		self::$json["status"] = TRUE;
-		self::$json["message"] = "Success send notification";
+		self::$json["message"] = lang('success_notif');
 		if(count(self::$error) > 0){
 			foreach (self::$error as $err_code => $message) {
 				$code = $err_code;
