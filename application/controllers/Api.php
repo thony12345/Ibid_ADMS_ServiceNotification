@@ -24,6 +24,7 @@ class Api extends CI_Controller {
 		$this->libs = new libs;
 		// change language
 		$this->lang->load('system','indonesia');
+		$this->load->helper('googlecal');
 	}
 
 	public function index(){
@@ -55,5 +56,12 @@ class Api extends CI_Controller {
 		// $tp::FCMData();
 		// $tp::debug();
 		$tp::process();
+	}
+
+	public function holidayCalendar(){
+		// definition
+		$gCal = new gCal(2017,9,"http://notification.dev/api/holidayCalendar");
+		// get result
+		echo json_encode($gCal->event);
 	}
 }
