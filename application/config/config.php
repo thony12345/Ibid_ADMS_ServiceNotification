@@ -523,7 +523,7 @@ $config['rewrite_short_tags'] = TRUE;
 $config['proxy_ips'] = '';
 
 
-$config['default_email_service'] = 'sendgrid'; // choose one: mandrill,sendgrid
+$config['default_email_service'] = 'mandrill'; // choose one: mandrill,sendgrid
 /*
 |--------------------------------------------------------------------------
 | Mandrill App Config
@@ -558,3 +558,13 @@ $config['sendgrid_from_name'] = "Administrator";
 | This is for Firebase Cloud Messaging configuration third party
 */
 $config['FCM_APIKEY'] = "AAAA6foUX6k:APA91bH_bHlEXPxTZtr1cAamXZRWvb6IAH0uIbFVApMQiyv9rAL5uSg-0LLHOhNjX923GgG7-0KCLpLcjpDR-MC_ZY6lJ5g4hwjmT9DUXja_dPfZuGV8qBmdpiLKnZFxy3fQeg30kRLc";
+
+
+/*
+|--------------------------------------------------------------------------
+| SMS Messaging App Config
+|--------------------------------------------------------------------------
+|
+| This is for SMS Messaging configuration third party [POST]
+*/
+$config['sms_url'] = "https://astraapps.astra.co.id/awo/api/send_sms.php";
