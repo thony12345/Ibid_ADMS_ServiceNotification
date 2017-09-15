@@ -15,25 +15,23 @@
  * the License.
  */
 
-class Google_Service_Dataflow_LogBucket extends Google_Model
+class Google_Service_Testing_DeviceFile extends Google_Model
 {
-  public $count;
-  public $log;
+  protected $obbFileType = 'Google_Service_Testing_ObbFile';
+  protected $obbFileDataType = '';
 
-  public function setCount($count)
+  /**
+   * @param Google_Service_Testing_ObbFile
+   */
+  public function setObbFile(Google_Service_Testing_ObbFile $obbFile)
   {
-    $this->count = $count;
+    $this->obbFile = $obbFile;
   }
-  public function getCount()
+  /**
+   * @return Google_Service_Testing_ObbFile
+   */
+  public function getObbFile()
   {
-    return $this->count;
-  }
-  public function setLog($log)
-  {
-    $this->log = $log;
-  }
-  public function getLog()
-  {
-    return $this->log;
+    return $this->obbFile;
   }
 }
