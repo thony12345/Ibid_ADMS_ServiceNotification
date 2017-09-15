@@ -1,10 +1,15 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 // required for push notification FCM
-use sngrl\PhpFirebaseCloudMessaging\Client;
-use sngrl\PhpFirebaseCloudMessaging\Message;
-use sngrl\PhpFirebaseCloudMessaging\Recipient\Device;
-use sngrl\PhpFirebaseCloudMessaging\Notification;
+// use sngrl\PhpFirebaseCloudMessaging\Client;
+// use sngrl\PhpFirebaseCloudMessaging\Message;
+// use sngrl\PhpFirebaseCloudMessaging\Recipient\Device;
+// use sngrl\PhpFirebaseCloudMessaging\Notification;
+
+// require BASEPATH."../vendor/sngrl/php-firebase-cloud-messaging/src/Client.php";
+// require BASEPATH."../vendor/sngrl/php-firebase-cloud-messaging/src/Message.php";
+// require BASEPATH."../vendor/sngrl/php-firebase-cloud-messaging/src/Recipient/Device.php";
+// require BASEPATH."../vendor/sngrl/php-firebase-cloud-messaging/src/Notification.php";
 
 // required mandrill library
 require_once APPPATH.'libraries/Mandrill.php';
@@ -27,7 +32,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		self::$server = $_SERVER;
 		self::$error = (object) array();
 		self::$config = self::_parse($data);
-		self::$ci = & get_instance();
+		self::$ci = &get_instance();
 		self::$json = array("status"=>FALSE, "message" => NULL, "data" => NULL);
 		// check config template
 		self::_validateConfig();
@@ -212,9 +217,8 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 					self::mandrillData();
 				else if(IEMAILSERVER == 'sendgrid')
 					self::sendgridData();
-			} else if(self::$config->type == "push"){
-				self::FCMData();
 			}
+
 		}
 	}
 
@@ -239,22 +243,13 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			}
 			// for push notification
 			else if(self::$config->type == "push"){
-				if(self::$element){
-					$message = new Message();
-					$message->setPriority('high');
-					foreach (self::$config->token as $i => $token) {
-						$message->addRecipient(new Device($token));
-					}
-					$message->setNotification(new Notification(self::$config->subject, self::$config->body));
-
-					try{
-						if(!($response = self::$element->send($message)))
-							throw new \Exception(lang('failed_notif'));
-						return $response;
-					} catch(\Exception $e){
-						self::sendError(401, $e->getMessage());
-						return array("error" => $e->getMessage());
-					}
+				try{
+					if(!($response = self::pushNotification(self::$config->subject,self::$config->body)))
+						throw new \Exception(lang('failed_notif'));
+					return $response;
+				} catch(\Exception $e){
+					self::sendError(401, $e->getMessage());
+					return array("error" => $e->getMessage());
 				}
 			}
 			// for sms notification
@@ -302,17 +297,6 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 
 	}
 
-	public static function FCMData(){
-		try{
-			self::$element = new Client();
-			self::$element->setApiKey(self::$ci->config->item('FCM_APIKEY'));
-			if(self::$element->injectGuzzleHttpClient(new \GuzzleHttp\Client()))
-				throw new \Exception(lang('check_api_key'));
-		} catch(\Exception $e){
-			self::sendError(401, $e->getMessage());
-		}
-	}
-
 	public static function process(){
 		// =========================
 		// processing
@@ -352,7 +336,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 	public static function _curl($url=false, $data=false){
 		$options = array(
 			CURLOPT_RETURNTRANSFER => true,     // return web page
-			CURLOPT_HEADER         => false,    // don't return headers
+			CURLOPT_HEADER         => isset(self::$config->header)?self::$config->header:false,    // don't return headers
 			CURLOPT_FOLLOWLOCATION => true,     // follow redirects
 			CURLOPT_ENCODING       => "",       // handle all encodings
 			CURLOPT_USERAGENT      => self::$ci->agent->platform(), // who am i
@@ -366,8 +350,13 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		if($data){
 			if(is_array($data)){
 				$postData = '';
-				foreach($params as $k => $v){
-					$postData .= $k . '='.$v.'&';
+				foreach($data as $k => $v){
+					if(is_array($v)){
+						foreach ($v as $k2 => $v2) {
+							$postData .= $k."[".$k2."]=".$v2;
+						}
+					} else
+						$postData .= $k.'='.$v.'&';
 				}
 				$postData = rtrim($postData, '&');
 				$options[CURLOPT_POST] = true;
@@ -378,6 +367,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		$curl      = curl_init($url);
 		curl_setopt_array( $curl, $options );
 
+		print_r($response); die();
 		$response = json_decode(curl_exec($curl));
 		curl_close($curl);
 		return $response;
@@ -388,6 +378,34 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		echo "<br><br>Data :<br>"; print_r(self::$data);
 		echo "<br><br>Error :<br>";print_r(self::$error);
 		die();
+	}
+
+	public static function pushNotification($subject=false, $body=false){
+		//FCM API end-point
+		$url = 'https://fcm.googleapis.com/fcm/send';
+				
+		$fields = array();
+		$fields['data'] = array('message' => $body,'title' => $subject);
+		$fields['registration_ids'] = self::$config->token;
+		// $fields['to'] = self::$config->token[0];
+		//header with content_type api key
+		$headers = array(
+		'Content-Type:application/json',
+		    'Authorization:key='.self::$ci->config->item('FCM_APIKEY')
+		);
+		//CURL request to route notification to FCM connection server (provided by Google)			
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+		$result = curl_exec($ch);
+
+		curl_close($ch);
+		return $result?json_decode($result):FALSE;
 	}
 
 

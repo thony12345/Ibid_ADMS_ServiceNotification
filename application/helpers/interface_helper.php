@@ -37,5 +37,5 @@ interface iSendgrid
 interface iFirebase
 {
 	public static function _validatePush();
-	public static function FCMData();
+	//public static function FCMData();
 }
