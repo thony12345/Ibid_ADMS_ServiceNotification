@@ -168,6 +168,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 					if(is_array(self::$config->attachment)){
 						$fd = APPPATH."../temp/attach/";
 						$tmps = array();
+						$i=1;
 						foreach (self::$config->attachment as $name => $base64) {
 							$fn = "(".date("Ymd").")attach".$i.".pdf";
 							$fp = $fd.$fn;
@@ -175,6 +176,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 							fwrite($file, base64_decode($base64));
 							fclose($file);
 							$tmps[$fn] = $fp;
+							$i++;
 						}
 						self::$config->attachment = $tmps;
 					}
