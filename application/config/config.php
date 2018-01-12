@@ -523,7 +523,7 @@ $config['rewrite_short_tags'] = TRUE;
 $config['proxy_ips'] = '';
 
 
-$config['default_email_service'] = 'mandrill'; // choose one: mandrill,sendgrid
+$config['default_email_service'] = 'sendgrid'; // choose one: mandrill,sendgrid
 /*
 |--------------------------------------------------------------------------
 | Mandrill App Config
@@ -544,8 +544,8 @@ $config['mandrill_email_name'] = "Administrator";
 |
 | This is for SendGrid configuration third party
 */
-$config['sendgrid_username'] = "azure_7c9e57d9a6559adffcec5f88de2d4137@azure.com";
-$config['sendgrid_password'] = "1sampai10";
+$config['sendgrid_username'] = "azure_6305836e15c05511101b0fed5b4f8adc@azure.com";
+$config['sendgrid_password'] = "Serasi123";
 $config['sendgrid_from'] = "rendhy.wijayanto@sera.astra.co.id";
 $config['sendgrid_from_name'] = "Administrator";
 
