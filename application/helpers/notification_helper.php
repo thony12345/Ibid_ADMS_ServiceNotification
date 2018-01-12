@@ -160,6 +160,25 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 						}
 					}
 				}
+
+				// ========================================================================
+				// for attachment
+				// ========================================================================
+				if(isset(self::$config->attachment)){
+					if(is_array(self::$config->attachment)){
+						$fd = APPPATH."../temp/attach/";
+						$tmps = array();
+						foreach (self::$config->attachment as $name => $base64) {
+							$fn = "(".date("Ymd").")attach".$i.".pdf";
+							$fp = $fd.$fn;
+							$file = fopen($fp, 'wb');
+							fwrite($file, base64_decode($base64));
+							fclose($file);
+							$tmps[$fn] = $fp;
+						}
+						self::$config->attachment = $tmps;
+					}
+				}
 			}
 		}
 	}
@@ -235,6 +254,11 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				try{
 					if(!($response = (IEMAILSERVER == "mandrill")?$mandrill->messages->send(self::$data, false):((IEMAILSERVER == "sendgrid")?$sendgrid->send(self::$data):false)))
 						throw new \Exception(lang('failed_notif'));
+					if(isset(self::$config->attachment)){
+						foreach (self::$config->attachment as $key => $file) {
+							unlink($file);
+						}
+					}
 					return $response;
 				} catch(\Exception $e){
 					self::sendError(401, $e->getMessage());
@@ -287,6 +311,12 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			->setFromName(self::$ci->config->item('sendgrid_from_name'))
 			->setSubject(self::$config->subject)
 			->setHtml(self::$config->body);
+
+		if(isset(self::$config->attachment)){
+			if(count(self::$config->attachment) > 0)
+				self::$data->setAttachments(self::$config->attachment);
+		}
+
 		foreach (self::$config->to as $i => $email) {
 			self::$data->addTo($email);
 		}
