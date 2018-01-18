@@ -33,6 +33,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		self::$error = (object) array();
 		self::$config = self::_parse($data);
 		self::$ci = &get_instance();
+		self::$ci->load->library('user_agent');
 		self::$json = array("status"=>FALSE, "message" => NULL, "data" => NULL);
 		// check config template
 		self::_validateConfig();
@@ -166,11 +167,11 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				// ========================================================================
 				if(isset(self::$config->attachment)){
 					if(is_array(self::$config->attachment)){
-						$fd = APPPATH."../temp/attach/";
+						$fd = (strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'linux') > 0)?APPPATH."../temp/attach/":APPPATH."..\\temp\\attach\\";
 						$tmps = array();
 						$i=1;
 						foreach (self::$config->attachment as $name => $base64) {
-							$fn = "(".date("Ymd").")attach".$i.".pdf";
+							$fn = "(".date("Ymd").")attach".$i.".".pathinfo($name, PATHINFO_EXTENSION);
 							$fp = $fd.$fn;
 							$file = fopen($fp, 'wb');
 							fwrite($file, base64_decode($base64));
