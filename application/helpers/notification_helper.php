@@ -174,11 +174,11 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 						if($win && !is_dir(APPPATH."..\\temp"))
 							mkdir(APPPATH."..\\temp",0777);
 						if($win && !is_dir(APPPATH."..\\temp\\attach"))
-							mkdir(APPPATH."..\\temp",0777);
+							mkdir(APPPATH."..\\temp\\attach",0777);
 						if(!$win && !is_dir(APPPATH."../temp"))
-							mkdir(APPPATH."..\\temp",0777);
+							mkdir(APPPATH."../temp",0777);
 						if(!$win && !is_dir(APPPATH."../temp/attach"))
-							mkdir(APPPATH."..\\temp",0777);
+							mkdir(APPPATH."../temp/attach",0777);
 
 						foreach (self::$config->attachment as $name => $base64) {
 							$tmpext = explode('.',$name);
