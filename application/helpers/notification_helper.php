@@ -167,12 +167,22 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				// ========================================================================
 				if(isset(self::$config->attachment)){
 					if(is_array(self::$config->attachment)){
-						$fd = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')?APPPATH."..\\temp\\attach\\":APPPATH."../temp/attach/";
+						$fd = ($win = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'))?APPPATH."..\\temp\\attach\\":APPPATH."../temp/attach/";
 						$tmps = array();
 						$i=1;
+						// for window
+						if($win && !is_dir(APPPATH."..\\temp"))
+							mkdir(APPPATH."..\\temp",0777);
+						if($win && !is_dir(APPPATH."..\\temp\\attach"))
+							mkdir(APPPATH."..\\temp",0777);
+						if(!$win && !is_dir(APPPATH."../temp"))
+							mkdir(APPPATH."..\\temp",0777);
+						if(!$win && !is_dir(APPPATH."../temp/attach"))
+							mkdir(APPPATH."..\\temp",0777);
+
 						foreach (self::$config->attachment as $name => $base64) {
 							$tmpext = explode('.',$name);
-							$fn = "(".date("Ymd").")attach".$i.".".$tmpext[count($tmpext)-1];
+							$fn = "(".date("Ymd").")attach_".$i.".".$name;
 							$fp = $fd.$fn;
 							$file = fopen($fp, 'wb');
 							fwrite($file, base64_decode($base64));
