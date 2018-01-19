@@ -193,6 +193,8 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 						}
 						self::$config->attachment = $tmps;
 					}
+				} else {
+					self::$config['attachment'] = array();
 				}
 			}
 		}
