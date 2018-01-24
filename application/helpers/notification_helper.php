@@ -33,6 +33,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		self::$error = (object) array();
 		self::$config = self::_parse($data);
 		self::$ci = &get_instance();
+		self::$ci->load->library('user_agent');
 		self::$json = array("status"=>FALSE, "message" => NULL, "data" => NULL);
 		// check config template
 		self::_validateConfig();
@@ -160,6 +161,41 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 						}
 					}
 				}
+
+				// ========================================================================
+				// for attachment
+				// ========================================================================
+				if(isset(self::$config->attachment)){
+					if(is_array(self::$config->attachment)){
+						$fd = ($win = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'))?APPPATH."..\\temp\\attach\\":APPPATH."../temp/attach/";
+						$tmps = array();
+						$i=1;
+						// for window
+						if($win && !is_dir(APPPATH."..\\temp"))
+							mkdir(APPPATH."..\\temp",0777);
+						if($win && !is_dir(APPPATH."..\\temp\\attach"))
+							mkdir(APPPATH."..\\temp\\attach",0777);
+						if(!$win && !is_dir(APPPATH."../temp"))
+							mkdir(APPPATH."../temp",0777);
+						if(!$win && !is_dir(APPPATH."../temp/attach"))
+							mkdir(APPPATH."../temp/attach",0777);
+
+						foreach (self::$config->attachment as $j => $fl) {
+							$fl = (array) $fl;
+							$tmpext = explode('.',$fl['name']);
+							$fn = "(".date("Ymd").")attach_".$i."(".str_replace(".".$tmpext[count($tmpext)-1],"",$fl['name']).").".$tmpext[count($tmpext)-1];
+							$fp = $fd.$fn;
+							$file = fopen($fp, 'wb');
+							fwrite($file, base64_decode($fl['data']));
+							fclose($file);
+							$tmps[$fn] = $fp;
+							$i++;
+						}
+						self::$config->attachment = $tmps;
+					}
+				} else {
+					self::$config->{'attachment'} = array();
+				}
 			}
 		}
 	}
@@ -235,6 +271,11 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				try{
 					if(!($response = (IEMAILSERVER == "mandrill")?$mandrill->messages->send(self::$data, false):((IEMAILSERVER == "sendgrid")?$sendgrid->send(self::$data):false)))
 						throw new \Exception(lang('failed_notif'));
+					if(isset(self::$config->attachment)){
+						foreach (self::$config->attachment as $key => $file) {
+							unlink($file);
+						}
+					}
 					return $response;
 				} catch(\Exception $e){
 					self::sendError(401, $e->getMessage());
@@ -287,6 +328,12 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			->setFromName(self::$ci->config->item('sendgrid_from_name'))
 			->setSubject(self::$config->subject)
 			->setHtml(self::$config->body);
+
+		if(isset(self::$config->attachment)){
+			if(count(self::$config->attachment) > 0)
+				self::$data->setAttachments(self::$config->attachment);
+		}
+
 		foreach (self::$config->to as $i => $email) {
 			self::$data->addTo($email);
 		}
