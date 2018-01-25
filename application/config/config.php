@@ -544,7 +544,7 @@ $config['mandrill_email_name'] = "Administrator";
 |
 | This is for SendGrid configuration third party
 */
-$config['sendgrid_username'] = "azure_6305836e15c05511101b0fed5b4f8adc@azure.com";
+$config['sendgrid_username'] = "azure_2c4fd7ca7d09c5665bd1d9c8f3979179@azure.com";
 $config['sendgrid_password'] = "Serasi123";
 $config['sendgrid_from'] = "rendhy.wijayanto@sera.astra.co.id";
 $config['sendgrid_from_name'] = "Administrator";
