@@ -297,9 +297,13 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			else if(self::$config->type == "sms"){
 				// unset type to clean data
 				unset(self::$config->type);
+				
+				// add connection user, pwd, sender
+				$tmp = array('user' => self::$ci->config->item('sms_user'), 'pwd' => self::$ci->config->item('sms_pwd'), 'sender' => self::$ci->config->item('sms_sender'));
+				self::$config = array_merge(self::$config, $tmp);
 
 				// send data sms
-				self::_curl(self::$ci->config->item('sms_url'), (array) self::$config);
+				return self::_curl(self::$ci->config->item('sms_url'), (array) self::$config);
 			}
 		}
 		return NULL;
