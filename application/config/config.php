@@ -568,6 +568,6 @@ $config['FCM_APIKEY'] = "AAAA6foUX6k:APA91bH_bHlEXPxTZtr1cAamXZRWvb6IAH0uIbFVApM
 | This is for SMS Messaging configuration third party [POST]
 */
 $config['sms_url'] = "https://astraapps.astra.co.id/awo/api/send_sms.php";
-$config['sms_user'] = "trac_driver";
-$config['sms_pwd'] = "trac_driver123";
-$config['sms_sender'] = "ADMS IBID";
+$config['sms_user'] = "user_ibid_1";
+$config['sms_pwd'] = "user_ibid_1123";
+$config['sms_sender'] = "IBID";

@@ -19,13 +19,8 @@ require BASEPATH."../vendor/sendgrid/sendgrid/lib/SendGrid.php";
 class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 {
 
-	private static $config;
-	private static $server;
 	public static $error;
-	private static $ci;
-	private static $json;
-	private static $data;
-	private static $element;
+	private static $config, $server, $ci, $json, $data, $element, $uri=false;
 
 	public function __construct($data){
 		// define variable on load
@@ -301,9 +296,17 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				// add connection user, pwd, sender
 				$tmp = array('user' => self::$ci->config->item('sms_user'), 'pwd' => self::$ci->config->item('sms_pwd'), 'sender' => self::$ci->config->item('sms_sender'));
 				self::$config =(object) array_merge((array)self::$config, $tmp);
-
+				// convert config to uri format
+				self::_uri_convert();
 				// send data sms
-				return self::_curl(self::$ci->config->item('sms_url'), (array) self::$config);
+				// POST Method
+				// if(!self::_curl(self::$ci->config->item('sms_url'), (array) self::$config))
+				// 	self::sendError(401, "SMS Not Send");
+
+				// GET Method
+				$res = simplexml_load_string(self::_curl(self::$ci->config->item('sms_url')."?".self::$uri));
+				if(strtolower($res->status[0]) !== "sent")
+					self::sendError(401, "SMS Not Send");
 			}
 		}
 		return NULL;
@@ -421,6 +424,13 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		$response = json_decode(curl_exec($curl));
 		curl_close($curl);
 		return $response;
+	}
+
+	private static function _uri_convert(){
+		foreach (self::$config as $var => $val) {
+			self::$config->{$var} = $var."=".urlencode($val);
+		}
+		self::$uri = implode("&",(array)self::$config);
 	}
 
 	public static function debug(){
