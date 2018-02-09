@@ -74,13 +74,13 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
+	'hostname' => '127.0.0.1',
+	'username' => 'SA',
+	'password' => 'P@ssw0rd123',
+	'database' => 'Account',
+	'dsn'	   => 'sqlsrv:Server=127.0.0.1;Database=Account;',
+	'dbdriver' => 'sqlsrv',
+	'dbprefix' => '',  
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
