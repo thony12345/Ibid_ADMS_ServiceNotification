@@ -546,8 +546,8 @@ $config['mandrill_email_name'] = "Administrator";
 */
 $config['sendgrid_username'] = "azure_2c4fd7ca7d09c5665bd1d9c8f3979179@azure.com";
 $config['sendgrid_password'] = "Serasi123";
-$config['sendgrid_from'] = "rendhy.wijayanto@sera.astra.co.id";
-$config['sendgrid_from_name'] = "Administrator";
+$config['sendgrid_from'] = "noreply@ibid.astra.co.id";
+$config['sendgrid_from_name'] = "No Reply";
 
 
 /*
