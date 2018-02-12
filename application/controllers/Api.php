@@ -24,7 +24,12 @@ class Api extends CI_Controller {
 		$this->libs = new libs;
 		// change language
 		$this->lang->load('system','indonesia');
-		$this->load->helper('googlecal');
+		try{
+			$this->load->database();
+		} catch(Exception $e){
+			echo json_encode(array('error' => 'Can\'t connect database')); die();
+		}
+		$this->load->helper(array('googlecal','token'));
 	}
 
 	public function index(){
@@ -56,6 +61,20 @@ class Api extends CI_Controller {
 		// $tp::FCMData();
 		// $tp::debug();
 		$tp::process();
+	}
+
+	public function update_token(){
+		if($this->input->server('REQUEST_METHOD') == 'POST'){
+			$token = new Token();
+			// check error
+			if(!($err = $token->update()->error)){
+				echo json_encode(array('id'=>$token->id())); die();
+			}
+
+			echo json_encode($err); die();
+
+		} else
+			echo json_encode(array('error' => 'POST method please')); die();
 	}
 
 	public function holidayCalendar(){
