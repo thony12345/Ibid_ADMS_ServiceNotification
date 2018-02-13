@@ -421,9 +421,9 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 		$curl      = curl_init($url);
 		curl_setopt_array( $curl, $options );
 
-		$response = json_decode(curl_exec($curl));
+		$response = curl_exec($curl);
 		curl_close($curl);
-		return $response;
+		return ((is_string($response) && is_array(json_decode($response, true)) ? true : false)?json_decode($response, true):$response);
 	}
 
 	private static function _uri_convert(){
