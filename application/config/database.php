@@ -74,13 +74,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
-	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
+	'hostname' => 'ibiddev.database.windows.net',
+	'username' => 'adminibiddev',
+	'password' => 'Serasi123',
+	'database' => 'Account', 
+	'dbdriver' => 'sqlsrv', 
+	'dbprefix' => '',  
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
