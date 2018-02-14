@@ -74,11 +74,11 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'hostname' => '127.0.0.1',
-	'username' => 'SA',
-	'password' => 'P@ssw0rd123',
+	'hostname' => 'ibiddev.database.windows.net',
+	'username' => 'adminibiddev',
+	'password' => 'Serasi123',
 	'database' => 'Account',
-	'dsn'	   => 'sqlsrv:Server=127.0.0.1;Database=Account;',
+	'dsn'	   => 'sqlsrv:Server=ibiddev.database.windows.net;Database=Account;',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',  
 	'pconnect' => FALSE,
