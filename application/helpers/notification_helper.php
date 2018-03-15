@@ -307,6 +307,8 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 				$res = simplexml_load_string(self::_curl(self::$ci->config->item('sms_url')."?".self::$uri));
 				if(strtolower($res->status[0]) !== "sent")
 					self::sendError(401, "SMS Not Send");
+				else
+					return $res;
 			}
 		}
 		return NULL;
