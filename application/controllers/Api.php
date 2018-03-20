@@ -83,4 +83,17 @@ class Api extends CI_Controller {
 		// get result
 		echo json_encode($gCal->event);
 	}
+
+	public function sms($trx=null){
+		$arr = array('status' => false, 'message' => '', 'data' => []);
+		if($trx){
+			$notif = new ADMSNotification('{}');
+			$res = $notif->_curl('https://astraapps.astra.co.id/awo/api/check_status.php?trxID='.$trx);
+			$arr['status'] = true;
+			$arr['message'] = 'Connected';
+			$arr['data'] = simplexml_load_string($res);
+		} else
+			$arr['message'] = 'trxID tidak ditemukan';
+		echo json_encode($arr);
+	}
 }
