@@ -73,13 +73,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = array(
-	'hostname' => 'ibiddev.database.windows.net',
-	'username' => 'adminibiddev',
-	'password' => 'Serasi123',
-	'database' => 'Account',
-	'dsn'	   => 'sqlsrv:Server=ibiddev.database.windows.net;Database=Account;',
-	'dbdriver' => 'sqlsrv',
+$db['default'] = array( 
+	'hostname' => '10.201.10.25',
+	'username' => 'SA',
+	'password' => 'P@ssw0rd123',
+	'database' => 'ALPHA_Account',
+	'dsn'	   => 'sqlsrv:Server=10.201.10.25;Database=ALPHA_Account;',
+	'dbdriver' => 'sqlsrv', 
+ 
 	'dbprefix' => '',  
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
