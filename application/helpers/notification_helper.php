@@ -259,7 +259,7 @@ class ADMSNotification implements iNotification, iMandrill, iFirebase, iSendgrid
 			if(self::$config->type == "email"){
 				if(IEMAILSERVER == "sendgrid")
 					// sendgrid
-					$sendgrid = new SendGrid(self::$ci->config->item('sendgrid_username'), self::$ci->config->item('sendgrid_password'));
+					$sendgrid = empty(self::$ci->config->item('sendgrid_password')) || self::$ci->config->item('sendgrid_password')==""? new SendGrid(self::$ci->config->item('sendgrid_username')): new SendGrid(self::$ci->config->item('sendgrid_username'), self::$ci->config->item('sendgrid_password'));
 				else if(IEMAILSERVER == "mandrill")
 					// mandrill
 					$mandrill = new Mandrill(self::$ci->config->item('mandrill_apikey'));

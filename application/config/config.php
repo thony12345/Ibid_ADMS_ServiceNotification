@@ -548,9 +548,12 @@ $config['mandrill_email_name'] = "Administrator";
 |--------------------------------------------------------------------------
 |
 | This is for SendGrid configuration third party
+| 
+| If use API Key password must empty;
+| Username = API Key
 */
-$config['sendgrid_username'] = "azure_2c4fd7ca7d09c5665bd1d9c8f3979179@azure.com";
-$config['sendgrid_password'] = "Serasi123";
+$config['sendgrid_username'] = "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";
+$config['sendgrid_password'] = "";
 $config['sendgrid_from'] = "noreply@ibid.astra.co.id";
 $config['sendgrid_from_name'] = "noreply@ibid.astra.co.id";
 
