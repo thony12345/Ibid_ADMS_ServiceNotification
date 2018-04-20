@@ -552,7 +552,7 @@ $config['mandrill_email_name'] = "Administrator";
 | If use API Key password must empty;
 | Username = API Key
 */
-$config['sendgrid_username'] = "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";
+$config['sendgrid_username'] = "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";
 $config['sendgrid_password'] = "";
 $config['sendgrid_from'] = "noreply@ibid.astra.co.id";
 $config['sendgrid_from_name'] = "noreply@ibid.astra.co.id";
