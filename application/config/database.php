@@ -74,11 +74,11 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array( 
-	'hostname' => '10.201.10.28',
+	'hostname' => '127.0.0.1',
 	'username' => 'SA',
 	'password' => 'sera12345#@',
 	'database' => 'Account',
-	'dsn'	   => 'sqlsrv:Server=10.201.10.28;Database=Account;',
+	'dsn'	   => 'sqlsrv:Server=127.0.0.1;Database=Account;',
 	'dbdriver' => 'sqlsrv', 
  
 	'dbprefix' => '',  
