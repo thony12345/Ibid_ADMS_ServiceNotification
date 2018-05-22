@@ -80,7 +80,6 @@ $db['default'] = array(
 	'database' => 'Account',
 	'dsn'	   => 'sqlsrv:Server=127.0.0.1;Database=Account;',
 	'dbdriver' => 'sqlsrv', 
- 
 	'dbprefix' => '',  
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
